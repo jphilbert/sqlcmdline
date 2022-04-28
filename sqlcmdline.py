@@ -24,7 +24,7 @@ to provide maximum flexibility (support SQLite, DNS, etc.)
                     "DSN" to use a Data Source Name in the <server>
                     parameter instead of an actual servername
 """
-from docopt import docopt
+import argparse
 import traceback
 import pyodbc
 import math
@@ -656,17 +656,62 @@ def query_loop():
         query = prompt_query_command()
 
 
+## ######################################################################### ##
+## Main Block
+## ######################################################################### ##
 if __name__ == "__main__":
-    arguments = docopt(__doc__)
-    server = arguments["-S"]
-    database = arguments["-d"]
-    user = arguments["-U"]
-    password = arguments["-P"]
-    intsec = arguments["-E"]
-    driver = arguments["--driver"]
-    if not driver:
-        driver = "{SQL Server}"
-    conninfo = ConnParams(server, database, user, password, driver, intsec)
+    parser = argparse.ArgumentParser(
+        usage = """%(prog)s [-h | --help]
+                     [-S SERVER -d DATABASE]
+                     [-E | -U USER -P PASSWORD]
+                     [--driver ODBC_DRIVER]""",
+        description = """Small command line utility to query databases via
+ODBC. The parameter names were chosen to match the official MSSQL tool,
+"sqlcmd", but all are optional to provide maximum flexibility (support SQLite,
+DNS, etc.)""")
+
+    group_server = parser.add_argument_group()
+    group_server.add_argument(
+        '-S',
+        dest = 'server',
+        help = """Server name. Optionaly you can specify a port with the format
+                    <server name, port>, or use a DNS""")
+    group_server.add_argument(
+        '-d',
+        dest = 'database',
+        help = """Database to open""")
+
+    
+    group_login = parser.add_argument_group()
+    group_login.add_argument(
+        '-E',        
+        action = 'store_true',
+        dest = 'intsec',
+        help = "Use Integrated Security")    
+    group_login.add_argument(
+        '-U',
+        dest = 'user',
+        help = "SQL Login user")
+    group_login.add_argument(
+        '-P',
+        dest = 'password',
+        help = "SQL Login password")
+    
+    parser.add_argument_group().add_argument(
+        '--driver',
+        default = '{SQL Server}',
+        help = """ODBC driver name, defaults to {SQL Server}. Use the value
+                    "DSN" to use a Data Source Name in the <server>
+                    parameter instead of an actual server name""")
+
+    arguments = parser.parse_args()
+    conninfo = ConnParams(
+        arguments.server,
+        arguments.database,
+        arguments.user,
+        arguments.password,
+        arguments.driver,
+        arguments.intsec)
     load_custom_commands()
     create_connection()
     query_loop()
