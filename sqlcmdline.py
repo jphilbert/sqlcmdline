@@ -4,12 +4,14 @@
                      [-E | -U <user> -P <password>]
                      [--driver <odbc_driver>]
 
-Small command line utility to query databases via ODBC. The parameter names
-were chosen to match the official MSSQL tool, "sqlcmd", but all are optional
-to provide maximum flexibility (support SQLite, DNS, etc.)
+Small command line utility to query databases via ODBC. The parameter names were
+chosen to match the official MSSQL tool, "sqlcmd", but all are optional to
+provide maximum flexibility (support SQLite, DNS, etc.). See
+https://github.com/jphilbert/sqlcmdline for more information.
 
-  -S <server>       Server name. Optionaly you can specify a port with the
-                    format <servername,port>, or use a DNS
+  -S <server>       Server name. Port can additionally be passed using the
+                    format <server name, port>. Optionally you can specify a DNS
+                    when "--driver DNS" is used.
 
   -d <database>     Database to open
 
@@ -22,7 +24,8 @@ to provide maximum flexibility (support SQLite, DNS, etc.)
 
   --driver <driver> ODBC driver name, defaults to {SQL Server}. Use the value
                     "DSN" to use a Data Source Name in the <server>
-                    parameter instead of an actual servername
+                    parameter instead of an actual server name
+
 """
 import argparse
 import traceback
@@ -665,17 +668,21 @@ if __name__ == "__main__":
                      [-S SERVER -d DATABASE]
                      [-E | -U USER -P PASSWORD]
                      [--driver ODBC_DRIVER]""",
-        description = """Small command line utility to query databases via
-ODBC. The parameter names were chosen to match the official MSSQL tool,
-"sqlcmd", but all are optional to provide maximum flexibility (support SQLite,
-DNS, etc.)""")
+        description = """
+        Small command line utility to query databases via ODBC. The parameter
+        names were chosen to match the official MSSQL tool, "sqlcmd", but all
+        are optional to provide maximum flexibility (support SQLite, DNS,
+        etc.). See https://github.com/jphilbert/sqlcmdline for more
+        information.""")
 
     group_server = parser.add_argument_group()
     group_server.add_argument(
         '-S',
         dest = 'server',
-        help = """Server name. Optionaly you can specify a port with the format
-                    <server name, port>, or use a DNS""")
+        help = """
+        Server name. Port can additionally be passed using the format <server
+        name, port>. Optionally you can specify a DNS when "--driver DNS" is
+        used.""")
     group_server.add_argument(
         '-d',
         dest = 'database',
@@ -700,9 +707,10 @@ DNS, etc.)""")
     parser.add_argument_group().add_argument(
         '--driver',
         default = '{SQL Server}',
-        help = """ODBC driver name, defaults to {SQL Server}. Use the value
-                    "DSN" to use a Data Source Name in the <server>
-                    parameter instead of an actual server name""")
+        help = """
+        ODBC driver name, defaults to {SQL Server}. Use the value "DSN" to use a
+        Data Source Name in the <server> parameter instead of an actual server
+        name""")
 
     arguments = parser.parse_args()
     conninfo = ConnParams(
