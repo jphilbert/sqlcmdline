@@ -10,11 +10,11 @@ Drop in replacement for [sqlcmd](https://docs.microsoft.com/en-us/sql/tools/sqlc
 
 ## Usage
 Depending on if using the source or a release, run either `python sqlcmdline.py` or `sqlcmdline.exe` with a combination of parameters.
-    * `-S <server>` - server name. Port can additionally be passed using the format `<server name, port>`. Optionally you can specify a DNS when `--driver DNS` is used.
-    * `-d <database>` - database to open
-    * `-E` - use integrated security
-    * `-U <user>` - SQL login username
-    * `-P <password>` - SQL login password
+  * `-S <server>` - server name. Port can additionally be passed using the format `<server name, port>`. Optionally you can specify a DNS when `--driver DNS` is used.
+  * `-d <database>` - database to open
+  * `-E` - use integrated security
+  * `-U <user>` - SQL login username
+  * `-P <password>` - SQL login password
 
 Use `--help` for *slightly* more detail.
 
